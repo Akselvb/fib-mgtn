@@ -1,12 +1,12 @@
-# Project 1. Duty-Cycle MAC Protocols - Energy Conservation
+@# Project 1. Duty-Cycle MAC Protocols - Energy Conservation
 
 ## Q1
 
-##### Construct Topology
+#### Construct Topology
 The first requirement is to construct an arbitrary topology of nodes. This is done by running
-the script *IoT-GT-header.py* provided by prof. Ordinas.\
+the script *IoT-GT-header.py* provided by prof. Ordinas.
 
-The constructed topology has the following properties:\
+The constructed topology has the following properties:
 - Insert topology here.
 - (Maybe even draw a graph visualizing the topology).
 
@@ -14,21 +14,20 @@ The constructed topology has the following properties:\
 In order to calculate the estimated energy conservation and the end-to-end delay of packet 
 transmission, the script *energy_latency_calculation.py* is constructed. This script inputs a 
 set of variables for different properties of the network, and calculates the results according to 
-the formulas provided by the project pdf document, *Table 2* respectively.\
+the formulas provided by the project pdf document, *Table 2* respectively.
 - Insert formulas here.
 
 The following shows the values obtained from the previous script, the given values 
-by the pdf document and the self-determined values as well:\
+by the pdf document and the self-determined values as well:
 - Such values.
 
 By inserting the aforementioned set of values into the constructed script, these results are 
-obtained:\
+obtained:
 - Wow.
 
 #### Draw Curves
 Consequently, a variety of curves can be drawn in order to see the relationsships between 
 the different elements.
-
 - Very graph.
 
  
