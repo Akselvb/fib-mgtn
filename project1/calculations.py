@@ -135,17 +135,23 @@ for i in range(len(E)):
 # THIS IS TASK 2 #
 ##################
 
-Fs = 2.0/(60.0*30.0*1000.0)
+Fs = 1.0/(60.0*30.0*1000.0)
 alpha1 = A1+A3*Fs
 alpha2 = A4*Fs
 alpha3 = A2*Fs
+
+L = []
+E = []
+
+#for Lmax in range(500, 5000, 5):
+Lmax = 5000
 # Decision variable
 x = Variable("x")
 
 # Constraint
 constraints = [Lmax >= beta1 * x + beta2,
             Tw_min <= x, Tw_max >= x]
-            # 0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + Fs * C]
+            #0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + (Fs * C)]
 
 # Objective (to minimize)
 objective = alpha1/x + alpha2*x + alpha3
@@ -154,14 +160,60 @@ objective = alpha1/x + alpha2*x + alpha3
 m = Model(objective, constraints)
 
 # Solve the Model
-#sol = m.solve(verbosity=0)
-sol = m.debug(verbosity=0)
+sol = m.solve(verbosity=0)
 
 # print selected results
-#print(sol)
-print("Optimal so:", sol['cost'])
-print(sol(x))
+L.append(Lmax)
+E.append(sol['cost'])
+print 'Lmax: ',Lmax
+print "Optimal so:", sol['cost']
+print sol(x)
+# print ""
 
+plt.xlabel("L_max")
+plt.ylabel("E_min")
+plt.plot(L, E)
+plt.savefig('Minimize_energy' + '.png')
+plt.clf()
+
+
+L = []
+E = []
+
+#for e_budget in range(5, 50):
+
+#e_budget = e_budget / 10.0
+e_budget = 1.
+
+# Decision variable
+x = Variable("x")
+
+# Constraint
+constraints = [alpha1/x + alpha2*x + alpha3 <= e_budget,
+            Tw_min <= x, Tw_max >= x]
+            #0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + (Fs * C)]
+
+# Objective (to minimize)
+objective = beta1*x + beta2
+
+# Formulate the Model
+m = Model(objective, constraints)
+
+# Solve the Model
+sol = m.solve(verbosity=0)
+
+# print selected results
+L.append(Lmax)
+E.append(sol['cost'])
+print "Optimal solution:", sol['cost']
+print sol(x)
+print ""
+
+# plt.xlabel("E_budget")
+# plt.ylabel("L_min")
+# plt.plot(E, L)
+# plt.savefig('Minimize_delay' + '.png')
+# plt.clf()
 
 
 
