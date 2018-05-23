@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 #%%
 ########################################################
@@ -34,8 +36,8 @@ Tdata = Thdr + P/R + Tack # data packet transmission duration [ms]
 Fs   = 1.0/(60*30*1000)    # e.g. Min traffic rate 1 pkt/half_hour = 1/(60*30*1000) pk/ms
 
 # Sleep period: Parameter Bounds
-Tw_max  = 500.       # Maximum Duration of Tw in ms
-Tw_min  = 100.       # Minimum Duration of Tw in ms
+Tw_max  = 500       # Maximum Duration of Tw in ms
+Tw_min  = 100       # Minimum Duration of Tw in ms
 
 #%%
 # Traffic calculation as a function of number of levels
@@ -56,33 +58,74 @@ F_B_d[D]  = C*Fout_d[D]
 
 A1 = (Tcs+Tal)
 A2 = ((Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
+A2 = A2[0]
 A3 = 3.0/2.0*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1]
+A3 = A3[0]
 A4 = Fout_d[1]/2.0
+A4 = A4[0]
 
-alpha1=A1+A3*Fs
-alpha2=A4*Fs
-alpha3=A2*Fs
+E=[]
+L=[]
 
-print("A1")
-print(A1)
-print("A2")
-print(A2)
-print("A3")
-print(A3)
-print("A4")
-print(A4)
-print("alpha1")
-print(alpha1)
-print("alpha2")
-print(alpha2)
-print("alpha3")
-print(alpha3)
+for Fs in [1.0/(60.0*30.0*1000.0), 2.0/(60.0*30.0*1000.0), 6.0/(60.0*30.0*1000.0), 9000000.0/(60.0*30.0*1000.0)]:
+    j=0
+    alpha1=A1+A3*Fs
+    alpha2=A4*Fs
+    alpha3=A2*Fs
 
-# Compute Betas
+    # print("A1")
+    # print(A1)
+    # print("A2")
+    # print(A2)
+    # print("A3")
+    # print(A3)
+    # print("A4")
+    # print(A4)
+    # print("alpha1")
+    # print(alpha1)
+    # print("alpha2")
+    # print(alpha2)
+    # print("alpha3")
+    # print(alpha3)
 
-beta1 = 0
-for i in range(1, D+1):
-  beta1 += 1/2
+    # Compute Betas
 
-print('beta1')
-print(beta1)
+    beta1 = 0
+    for i in range(D):
+      beta1 += 1/2
+
+    beta2 = 0
+    for i in range(D):
+      beta2 += (Tcw/2)+Tdata
+
+    #
+    # print('beta1')
+    # print(beta1)
+    # print('beta2')
+    # print(beta2)
+
+    Es = []
+    Ls = []
+
+    # Calculate E and L
+    for Tw in range(int(Tw_min), int(Tw_max)):
+        Es.append(((alpha1/Tw)+(alpha2*Tw)+alpha3))
+        Ls.append(((beta1*Tw)+beta2))
+
+
+    E.append(Es)
+    L.append(Ls)
+
+# Create the graphs
+for i in range(len(E)):
+    plt.plot(E[i])
+    plt.savefig('Energy' + str(i) + '.png')
+    plt.clf()
+
+    plt.plot(L[i])
+    plt.savefig('Delay' + str(i) + '.png')
+    plt.clf()
+
+    plt.plot(E[i], L[i])
+    plt.savefig('Energy-delay' + str(i) + '.png')
+    plt.clf()
