@@ -11,13 +11,13 @@ import numpy as np
 ########################################################
 # Radio subsystem varaible definition
 
-P     = 32.            # Payload [byte]
+P     = 32.       # Payload [byte]
 R     = 31.25          # CC2420 Radio Rate [kbyte/s]
 D     = 8              # number of levels
 C     = 5              # neighbors size (connectivity)
 N     = C*D**2          # number of nodes
 Lmax  = 5000.          # Maximal allowed Delay (ms)
-Emax  = 1.            # MAximal Energy Budjet (J)
+Emax  = 1.          # MAximal Energy Budjet (J)
 
 L_pbl = 4.             # preamble length [byte]
 L_hdr = 9. + L_pbl     # header length [byte]
@@ -55,30 +55,30 @@ for i in range(1,D):
 
 #Fin_d(0)  = F_s*D^2*C
 
-Fout_d[D] = 1.0
-Fin_d[D]  = 0.0
+Fout_d[D] = 1
+Fin_d[D]  = 0
 F_B_d[D]  = C*Fout_d[D]
 
 A1 = (Tcs+Tal)
 A2 = ( (Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
 A2 = A2[0]
-A3 = 3.0/2.0*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1]
+A3 = (3.0/2.0)*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1]
 A3 = A3[0]
 A4 = Fout_d[1]/2.0
 A4 = A4[0]
 
-beta1 = 0.0
+beta1 = 0
 for i in range(D):
   beta1 += 1.0/2.0
 
-beta2 = 0.0
+beta2 = 0
 for i in range(D):
   beta2 += (Tcw/2.0)+Tdata
 
 E = []
 L = []
 
-for Fs in [1.0/(60.0*30.0*1000.0), 2.0/(60.0*30.0*1000.0), 6.0/(60.0*30.0*1000.0), 9000000.0/(60.0*30.0*1000.0)]:
+for Fs in [1.0/(60*30*1000), 2.0/(60*30*1000), 6.0/(60*30*1000), 9000000.0/(60*30*1000)]:
     j = 0
     alpha1 = A1+A3*Fs
     alpha2 = A4*Fs
@@ -87,16 +87,15 @@ for Fs in [1.0/(60.0*30.0*1000.0), 2.0/(60.0*30.0*1000.0), 6.0/(60.0*30.0*1000.0
     Es = []
     Ls = []
 
-    # print(A1)
-    # print(A2)
-    # print(A3)
-    # print(A4)
-    # print(alpha1)
-    # print(alpha2)
-    # print(alpha3)
-    # print(beta1)
-    # print(beta2)
-    # print()
+    print(A1)
+    print(A2)
+    print(A3)
+    print(A4)
+    print(alpha1)
+    print(alpha2)
+    print(alpha3)
+    print(beta1)
+    print(beta2)
 
     # Calculate E and L
     for Tw in range(int(Tw_min), int(Tw_max)):
@@ -135,23 +134,18 @@ for i in range(len(E)):
 # THIS IS TASK 2 #
 ##################
 
-Fs = 1.0/(60.0*30.0*1000.0)
+Fs = 1.0/(60*30*1000)
 alpha1 = A1+A3*Fs
 alpha2 = A4*Fs
 alpha3 = A2*Fs
-
-L = []
-E = []
-
-#for Lmax in range(500, 5000, 5):
-Lmax = 5000
 # Decision variable
 x = Variable("x")
+y= Variable("Fout_d",Fout_d[1])
+z= Variable("test",((Tcs + Tal + x/2.0 + Tack + Tdata) * y * Fs * C))
 
 # Constraint
-constraints = [Lmax >= beta1 * x + beta2,
-            Tw_min <= x, Tw_max >= x]
-            #0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + (Fs * C)]
+constraints = [Lmax >= beta1 * x + beta2, Tw_min <= x, Tw_max >= x, z <=0.25]
+            # (Tcs*Tal+x/2.0 + Tack + Tdata) * y * fs * c
 
 # Objective (to minimize)
 objective = alpha1/x + alpha2*x + alpha3
@@ -160,60 +154,15 @@ objective = alpha1/x + alpha2*x + alpha3
 m = Model(objective, constraints)
 
 # Solve the Model
-sol = m.solve(verbosity=0)
+#sol = m.solve(verbosity=0)
+sol = m.debug(verbosity=0)
 
 # print selected results
-L.append(Lmax)
-E.append(sol['cost'])
-print 'Lmax: ',Lmax
-print "Optimal so:", sol['cost']
-print sol(x)
-# print ""
+#print(sol)
+print("Optimal so:", sol['cost'])
+print(sol(x))
+# print(sol.table())
 
-plt.xlabel("L_max")
-plt.ylabel("E_min")
-plt.plot(L, E)
-plt.savefig('Minimize_energy' + '.png')
-plt.clf()
-
-
-L = []
-E = []
-
-#for e_budget in range(5, 50):
-
-#e_budget = e_budget / 10.0
-e_budget = 1.
-
-# Decision variable
-x = Variable("x")
-
-# Constraint
-constraints = [alpha1/x + alpha2*x + alpha3 <= e_budget,
-            Tw_min <= x, Tw_max >= x]
-            #0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + (Fs * C)]
-
-# Objective (to minimize)
-objective = beta1*x + beta2
-
-# Formulate the Model
-m = Model(objective, constraints)
-
-# Solve the Model
-sol = m.solve(verbosity=0)
-
-# print selected results
-L.append(Lmax)
-E.append(sol['cost'])
-print "Optimal solution:", sol['cost']
-print sol(x)
-print ""
-
-# plt.xlabel("E_budget")
-# plt.ylabel("L_min")
-# plt.plot(E, L)
-# plt.savefig('Minimize_delay' + '.png')
-# plt.clf()
 
 
 
