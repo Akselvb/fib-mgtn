@@ -118,14 +118,23 @@ for Fs in [1.0/(60.0*30.0*1000.0), 2.0/(60.0*30.0*1000.0), 6.0/(60.0*30.0*1000.0
 
 # Create the graphs
 for i in range(len(E)):
+    plt.title("Energy as a function of sleep time")
+    plt.xlabel("Tw")
+    plt.ylabel("E")
     plt.plot(E[i])
     plt.savefig('Energy' + str(i) + '.png')
     plt.clf()
 
+    plt.title("Delay as a function of sleep time")
+    plt.xlabel("Tw")
+    plt.ylabel("L")
     plt.plot(L[i])
     plt.savefig('Delay' + str(i) + '.png')
     plt.clf()
-
+    
+    plt.title("Delay as a function of energy")
+    plt.xlabel("E")
+    plt.ylabel("L")
     plt.plot(E[i], L[i])
     plt.savefig('Energy-delay' + str(i) + '.png')
     plt.clf()
