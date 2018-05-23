@@ -28,19 +28,28 @@ obtained:
 #### Draw Curves
 Consequently, a variety of curves can be drawn in order to see the relationsships between
 the different elements.
-![Delay0](Delay0.png)
-![Delay1](Delay1.png)
-![Delay2](Delay2.png)
-![Delay3](Delay3.png)
-![Energy0](Energy0.png)
-![Energy0](Energy1.png)
-![Energy0](Energy2.png)
-![Energy0](Energy3.png)
-![Energy-delay0](Energy-delay0.png)
-![Energy-delay0](Energy-delay1.png)
-![Energy-delay0](Energy-delay2.png)
-![Energy-delay0](Energy-delay3.png)
+![Delay0](images/Delay0.png)
+![Delay1](images/Delay1.png)
+![Delay2](images/Delay2.png)
+![Delay3](images/Delay3.png)
+![Energy0](images/Energy0.png)
+![Energy0](images/Energy1.png)
+![Energy0](images/Energy2.png)
+![Energy0](images/Energy3.png)
+![Energy-delay0](images/Energy-delay0.png)
+![Energy-delay0](images/Energy-delay1.png)
+![Energy-delay0](images/Energy-delay2.png)
+![Energy-delay0](images/Energy-delay3.png)
 
+**Energy as a function of sleep time**: For our specified time interval Tw € [100, 500], the curvature of the slope is approximately a negative exponential function. However, as the packet generation increases, we see that the energy starts to gradually increase.
+
+**Delay as a function of sleep time**: The curve is increasing in a linear scale. The slope remains the same for each test, as a result of not being affected by the sampling rate.
+
+**Delay as a function of energy**: The graph of with slowest packet generation shows that there is a significant relationship between energy and delay; the energy consumption is high when the delay is low and vica versa. Nonetheless, when increasing the packet sampling generation frequency, it isn't necessarily the case that the highest delay is equivalent to the lowest energy consumption.
+
+The graphs of the energy vs. delay yields that there is a specific point when the delay starts increasing, as well as the energy consumption is increasing. This is a result of the waiting time is getting very large. Consequently, strobes will repeatedly be sent, but none of them will be acknowledged. Therefore, both energy and the delay will increase.
+
+When the sampling rate is very high, we find ourselves in a case where our model is simply not suitable anymore. That would correspond to a scenario where the sleeping time is higher than the sampling interval. This results in graphs that makes no sense.
 
 
 ## Q2
