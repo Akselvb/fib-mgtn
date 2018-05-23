@@ -87,15 +87,15 @@ for Fs in [1.0/(60*30*1000), 2.0/(60*30*1000), 6.0/(60*30*1000), 9000000.0/(60*3
     Es = []
     Ls = []
 
-    print(A1)
-    print(A2)
-    print(A3)
-    print(A4)
-    print(alpha1)
-    print(alpha2)
-    print(alpha3)
-    print(beta1)
-    print(beta2)
+    # print(A1)
+    # print(A2)
+    # print(A3)
+    # print(A4)
+    # print(alpha1)
+    # print(alpha2)
+    # print(alpha3)
+    # print(beta1)
+    # print(beta2)
 
     # Calculate E and L
     for Tw in range(int(Tw_min), int(Tw_max)):
@@ -138,37 +138,78 @@ Fs = 1.0/(60*30*1000)
 alpha1 = A1+A3*Fs
 alpha2 = A4*Fs
 alpha3 = A2*Fs
+
 # Decision variable
 x = Variable("x")
 y= Variable("Fout_d",Fout_d[1])
 z= Variable("test",((Tcs + Tal + x/2.0 + Tack + Tdata) * y * Fs * C))
 
-# Constraint
-constraints = [Lmax >= beta1 * x + beta2, Tw_min <= x, Tw_max >= x, z <=0.25]
-            # (Tcs*Tal+x/2.0 + Tack + Tdata) * y * fs * c
+# E = []
+# L = []
+#
+# for Lmax in range(1000, 5000, 10):
+#     # Constraint
+#     constraints = [Lmax >= beta1 * x + beta2, Tw_min <= x, Tw_max >= x, z <=0.25]
+#                 # (Tcs*Tal+x/2.0 + Tack + Tdata) * y * fs * c
+#
+#     # Objective (to minimize)
+#     objective = alpha1/x + alpha2*x + alpha3
+#
+#     # Formulate the Model
+#     m = Model(objective, constraints)
+#
+#     # Solve the Model
+#     #sol = m.solve(verbosity=0)
+#     sol = m.debug(verbosity=0)
+#
+#     # print selected results
+#     #print(sol)
+#     #print("Optimal so:", sol['cost'])
+#     E.append(sol['cost'])
+#     L.append(Lmax)
+#     #print(sol(x))
+#     # print(sol.table())
+#
+# plt.title("Minimization of energy constrained to different maximum delays.")
+# plt.xlabel("L_max")
+# plt.ylabel("E_min")
+# plt.plot(L, E)
+# plt.savefig('Minimize_energy.png')
+# plt.clf()
 
-# Objective (to minimize)
-objective = alpha1/x + alpha2*x + alpha3
 
-# Formulate the Model
-m = Model(objective, constraints)
+E = []
+L = []
 
-# Solve the Model
-#sol = m.solve(verbosity=0)
-sol = m.debug(verbosity=0)
+e_budget = 0.00
+while e_budget < 1:
+    e_budget += 0.01
 
-# print selected results
-#print(sol)
-print("Optimal so:", sol['cost'])
-print(sol(x))
-# print(sol.table())
+    constraints = [e_budget >= alpha1/x + alpha2*x + alpha3, Tw_min <= x, Tw_max >= x, z <=0.25]
+
+    objective = beta1*x + beta2
+
+    l = Model(objective, constraints)
+
+    sol = l.debug(verbosity=0)
+    #print(sol['cost'])
+    print(sol)
+
+    # opt = float(sol['cost'])
+    # print(opt)
+
+    # L.append(float(sol['cost']))
+    # E.append(e_budget)
 
 
-
-
-
-
-
+# plt.title("Minimization of delay constrained to different energy budgets.")
+# plt.xlabel("E_budget")
+# plt.ylabel("L_min")
+# print(E)
+# print(L)
+# plt.plot(E, L)
+# plt.savefig('Minimize_delay.png')
+# plt.clf()
 
 
 

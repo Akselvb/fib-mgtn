@@ -56,7 +56,12 @@ When the sampling rate is very high, we find ourselves in a case where our model
 
 
 ## Q2
-- Solve optimization problem
+For the optimization problems that are presented in the project, we choose to use Python with packages/libraries gpkit with coherent dependencies.
+
+**Minimize energy consumption subject to some maximum delay**
+![Minimize_energy](Minimize_energy.png)
+
+The graph yields that
 
 
 ## Q3
