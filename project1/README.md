@@ -1,4 +1,4 @@
-@# Project 1. Duty-Cycle MAC Protocols - Energy Conservation
+# Project 1. Duty-Cycle MAC Protocols - Energy Conservation
 
 ## Q1
 
