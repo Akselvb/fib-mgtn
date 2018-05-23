@@ -61,7 +61,14 @@ For the optimization problems that are presented in the project, we choose to us
 **Minimize energy consumption subject to some maximum delay**
 ![Minimize_energy](Minimize_energy.png)
 
-The graph yields that
+The graph yields that for an *Lmax* value lower than roughly 1800 ms, the minimal energy consumption increases exponentially. At the same time, we also see that there is no benefit in increasing the maximum delay, in terms of reduced energy consumption.
+
+**Minimize delay subject to some energy budget**
+![Minimize_delay](Minimize_delay.png)
+
+For the minimization of delay instead of energy, the same pattern occurs. There is a specific point for e_budget of around 0.038 where a lower budget will significantly increase the delay, and likewise, a higher energy budget will not improve it.
+
+
 
 
 ## Q3

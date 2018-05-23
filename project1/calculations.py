@@ -62,7 +62,7 @@ F_B_d[D]  = C*Fout_d[D]
 A1 = (Tcs+Tal)
 A2 = ( (Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
 A2 = A2[0]
-A3 = (3.0/2.0)*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1]
+A3 = (3.0/2.0)*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1] # 3/2 will affect A3 and the following dependent variables.
 A3 = A3[0]
 A4 = Fout_d[1]/2.0
 A4 = A4[0]
@@ -87,15 +87,16 @@ for Fs in [1.0/(60*30*1000), 2.0/(60*30*1000), 6.0/(60*30*1000), 9000000.0/(60*3
     Es = []
     Ls = []
 
-    # print(A1)
-    # print(A2)
-    # print(A3)
-    # print(A4)
-    # print(alpha1)
-    # print(alpha2)
-    # print(alpha3)
-    # print(beta1)
-    # print(beta2)
+    print(A1)
+    print(A2)
+    print(A3)
+    print(A4)
+    print(alpha1)
+    print(alpha2)
+    print(alpha3)
+    print(beta1)
+    print(beta2)
+    print ""
 
     # Calculate E and L
     for Tw in range(int(Tw_min), int(Tw_max)):
@@ -178,35 +179,30 @@ z= Variable("test",((Tcs + Tal + x/2.0 + Tack + Tdata) * y * Fs * C))
 # plt.clf()
 
 
-E = []
-L = []
-
-e_budget = 0.00
-while e_budget < 1:
-    e_budget += 0.01
-
-    constraints = [e_budget >= alpha1/x + alpha2*x + alpha3, Tw_min <= x, Tw_max >= x, z <=0.25]
-
-    objective = beta1*x + beta2
-
-    l = Model(objective, constraints)
-
-    sol = l.debug(verbosity=0)
-    #print(sol['cost'])
-    print(sol)
-
-    # opt = float(sol['cost'])
-    # print(opt)
-
-    # L.append(float(sol['cost']))
-    # E.append(e_budget)
-
-
+# E = []
+# L = []
+#
+# e_budget = 0.017
+# while e_budget < 0.1:
+#     e_budget += 0.001
+#
+#     constraints = [e_budget >= alpha1/x + alpha2*x + alpha3, Tw_min <= x, Tw_max >= x, z <=0.25]
+#
+#     objective = beta1*x + beta2
+#
+#     l = Model(objective, constraints)
+#
+#     sol = l.debug(verbosity=0)
+#     #print(sol['cost'])
+#     #print(sol['cost'])
+#
+#     L.append(sol['cost'])
+#     E.append(e_budget)
+#
+#
 # plt.title("Minimization of delay constrained to different energy budgets.")
 # plt.xlabel("E_budget")
 # plt.ylabel("L_min")
-# print(E)
-# print(L)
 # plt.plot(E, L)
 # plt.savefig('Minimize_delay.png')
 # plt.clf()
