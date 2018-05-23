@@ -41,11 +41,14 @@ the different elements.
 ![Energy-delay0](images/Energy-delay2.png)
 ![Energy-delay0](images/Energy-delay3.png)
 
-**Energy as a function of sleep time**: For our specified time interval Tw € [100, 500], the curvature of the slope is approximately a negative exponential function. However, as the packet generation increases, we see that the energy starts to gradually increase.
+**Energy as a function of sleep time**
+\For our specified time interval Tw € [100, 500], the curvature of the slope is approximately a negative exponential function. However, as the packet generation increases, we see that the energy starts to gradually increase.
 
-**Delay as a function of sleep time**: The curve is increasing in a linear scale. The slope remains the same for each test, as a result of not being affected by the sampling rate.
+**Delay as a function of sleep time**
+\The curve is increasing in a linear scale. The slope remains the same for each test, as a result of not being affected by the sampling rate.
 
-**Delay as a function of energy**: The graph of with slowest packet generation shows that there is a significant relationship between energy and delay; the energy consumption is high when the delay is low and vica versa. Nonetheless, when increasing the packet sampling generation frequency, it isn't necessarily the case that the highest delay is equivalent to the lowest energy consumption.
+**Delay as a function of energy**:
+\The graph of with slowest packet generation shows that there is a significant relationship between energy and delay; the energy consumption is high when the delay is low and vica versa. Nonetheless, when increasing the packet sampling generation frequency, it isn't necessarily the case that the highest delay is equivalent to the lowest energy consumption.
 
 The graphs of the energy vs. delay yields that there is a specific point when the delay starts increasing, as well as the energy consumption is increasing. This is a result of the waiting time is getting very large. Consequently, strobes will repeatedly be sent, but none of them will be acknowledged. Therefore, both energy and the delay will increase.
 

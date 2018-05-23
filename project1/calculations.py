@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+from gpkit import Variable, Model
 
+import numpy as np
 
 #%%
 ########################################################
@@ -36,8 +39,8 @@ Tdata = Thdr + P/R + Tack # data packet transmission duration [ms]
 Fs   = 1.0/(60*30*1000)    # e.g. Min traffic rate 1 pkt/half_hour = 1/(60*30*1000) pk/ms
 
 # Sleep period: Parameter Bounds
-Tw_max  = 500       # Maximum Duration of Tw in ms
-Tw_min  = 100       # Minimum Duration of Tw in ms
+Tw_max  = 500.       # Maximum Duration of Tw in ms
+Tw_min  = 100.       # Minimum Duration of Tw in ms
 
 #%%
 # Traffic calculation as a function of number of levels
@@ -57,64 +60,52 @@ Fin_d[D]  = 0.0
 F_B_d[D]  = C*Fout_d[D]
 
 A1 = (Tcs+Tal)
-A2 = ((Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
+A2 = ( (Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
 A2 = A2[0]
 A3 = 3.0/2.0*Tps*((Tps+Tal)/2+Tack+Tdata)*F_B_d[1]
 A3 = A3[0]
 A4 = Fout_d[1]/2.0
 A4 = A4[0]
 
-E=[]
-L=[]
+beta1 = 0.0
+for i in range(D):
+  beta1 += 1.0/2.0
+
+beta2 = 0.0
+for i in range(D):
+  beta2 += (Tcw/2.0)+Tdata
+
+E = []
+L = []
 
 for Fs in [1.0/(60.0*30.0*1000.0), 2.0/(60.0*30.0*1000.0), 6.0/(60.0*30.0*1000.0), 9000000.0/(60.0*30.0*1000.0)]:
-    j=0
-    alpha1=A1+A3*Fs
-    alpha2=A4*Fs
-    alpha3=A2*Fs
-
-    # print("A1")
-    # print(A1)
-    # print("A2")
-    # print(A2)
-    # print("A3")
-    # print(A3)
-    # print("A4")
-    # print(A4)
-    # print("alpha1")
-    # print(alpha1)
-    # print("alpha2")
-    # print(alpha2)
-    # print("alpha3")
-    # print(alpha3)
-
-    # Compute Betas
-
-    beta1 = 0
-    for i in range(D):
-      beta1 += 1/2
-
-    beta2 = 0
-    for i in range(D):
-      beta2 += (Tcw/2)+Tdata
-
-    #
-    # print('beta1')
-    # print(beta1)
-    # print('beta2')
-    # print(beta2)
+    j = 0
+    alpha1 = A1+A3*Fs
+    alpha2 = A4*Fs
+    alpha3 = A2*Fs
 
     Es = []
     Ls = []
+
+    # print(A1)
+    # print(A2)
+    # print(A3)
+    # print(A4)
+    # print(alpha1)
+    # print(alpha2)
+    # print(alpha3)
+    # print(beta1)
+    # print(beta2)
+    # print()
 
     # Calculate E and L
     for Tw in range(int(Tw_min), int(Tw_max)):
         Es.append(((alpha1/Tw)+(alpha2*Tw)+alpha3))
         Ls.append(((beta1*Tw)+beta2))
 
-
     E.append(Es)
     L.append(Ls)
+
 
 # Create the graphs
 for i in range(len(E)):
@@ -131,10 +122,88 @@ for i in range(len(E)):
     plt.plot(L[i])
     plt.savefig('Delay' + str(i) + '.png')
     plt.clf()
-    
+
     plt.title("Delay as a function of energy")
     plt.xlabel("E")
     plt.ylabel("L")
-    plt.plot(E[i], L[i])
+    plt.plot(L[i], E[i])
     plt.savefig('Energy-delay' + str(i) + '.png')
     plt.clf()
+
+
+##################
+# THIS IS TASK 2 #
+##################
+
+Fs = 2.0/(60.0*30.0*1000.0)
+alpha1 = A1+A3*Fs
+alpha2 = A4*Fs
+alpha3 = A2*Fs
+# Decision variable
+x = Variable("x")
+
+# Constraint
+constraints = [Lmax >= beta1 * x + beta2,
+            Tw_min <= x, Tw_max >= x]
+            # 0.25 >= (Tcs + Tal + x/2.0 + Tack + Tdata) * Fout_d[1] + Fs * C]
+
+# Objective (to minimize)
+objective = alpha1/x + alpha2*x + alpha3
+
+# Formulate the Model
+m = Model(objective, constraints)
+
+# Solve the Model
+#sol = m.solve(verbosity=0)
+sol = m.debug(verbosity=0)
+
+# print selected results
+#print(sol)
+print("Optimal so:", sol['cost'])
+print(sol(x))
+
+
+
+
+
+
+
+
+
+
+
+
+
+# print(alpha1)
+# print(alpha2)
+# print(alpha3)
+# print(beta1)
+# print(beta2)
+# print(Fout_d[1])
+
+# x0 = 150
+# fun = lambda x: alpha1/x[0] + alpha2*x[0] + alpha3
+#
+# cons = ({'type': 'ineq', 'fun': lambda x: Lmax - beta1 * x[0] - beta2},
+#         {'type': 'ineq', 'fun': lambda x: -Tw_min + x[0]},
+#         {'type': 'ineq', 'fun': lambda x: -x[0] + Tw_max},
+#         {'type': 'ineq', 'fun': lambda x: 0.25 - (Tcs + Tal + x[0]/2 + Tack + Tdata) * Fout_d[1] + Fs * C})
+#
+# res = minimize(fun, x0, method="SLSQP", constraints=cons, bounds=[(None, None)])
+#
+# print(res)
+# print(res.fun)
+# print(res.x[0])
+
+# x = Variable("x")
+
+# constraints = [x >= 1]
+
+# objective = x**2
+
+# m = Model(objective, constraints)
+
+# sol = m.solve(verbosity=0)
+
+# print(sol['cost'])
+# print(sol(x))
