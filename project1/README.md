@@ -20,25 +20,31 @@ the formulas provided by the project pdf document, *Table 2* respectively.
 #### Draw Curves
 By inserting the aforementioned set of values into the constructed script, results for energy consumption and overall network latency is obtained Consequently, a variety of curves can be drawn in order to see the relationsships between the different elements.
 
-**Energy as a function of sleep time**
+**Energy consumption as a function of sleep time**
+
 ![Energy0](images/energy0.png)
 ![Energy0](images/energy1.png)
 ![Energy0](images/energy2.png)
 ![Energy0](images/energy3.png)
+
 For our specified time interval Tw in [100, 500], the curvature of the slope is approximately a negative exponential function when packets are generated at a relatively slow pace. However, as the packet generation increases, we see that the energy also starts to gradually increase when the sleeping time increases.
 
 **Delay as a function of sleep time**
+
 ![Delay0](images/delay0.png)
 ![Delay1](images/delay1.png)
 ![Delay2](images/delay2.png)
 ![Delay3](images/delay3.png)
+
 The curve is increasing in a linear scale. The slope remains the same for each test, as a result of not being affected by the sampling rate.
 
-**Delay as a function of energy**:
+**Energy consumption as a function of delay**
+
 ![Energy-delay0](images/energy-delay0.png)
 ![Energy-delay0](images/energy-delay1.png)
 ![Energy-delay0](images/energy-delay2.png)
 ![Energy-delay0](images/energy-delay3.png)
+
 The graph with the slowest packet generation shows that there is a significant relationship between energy and delay; the energy consumption is high when the delay is low and vica versa. However, when increasing the packet sampling generation frequency, it isn't necessarily the case that the highest delay is equivalent to the lowest energy consumption.
 
 The graphs of the energy vs. delay yields that there is a specific point when the delay starts increasing, as well as the energy consumption is increasing. This is a result of the waiting time is getting very large. Consequently, strobes will repeatedly be sent, whereas none of them will be acknowledged. Therefore, both energy and the delay will increase.
@@ -52,12 +58,12 @@ When the sampling rate is very high, we find ourselves in a case where our model
 For the optimization problems that are presented in the project, we choose to use Python with library gpkit with coherent dependencies.
 
 **Minimize energy consumption subject to some maximum delay**
-![Minimize_energy](minimize-energy.png)
+![Minimize_energy](images/minimize_energy.png)
 
 The graph yields that for an *Lmax* value lower than roughly 1800 ms, the minimal energy consumption increases exponentially. At the same time, we also see that there is no benefit in increasing the maximum delay, in terms of reduced energy consumption.
 
 **Minimize delay subject to some energy budget**
-![Minimize_delay](minimize-delay.png)
+![Minimize_delay](images/minimize_delay.png)
 
 For the minimization of delay instead of energy, the same pattern occurs. There is a specific point for e_budget of around 0.038 where a lower budget will significantly increase the delay, and likewise, a higher energy budget will not improve it.
 
