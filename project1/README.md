@@ -8,12 +8,22 @@ The first requirement is to construct an arbitrary topology of nodes. This is do
 the script *IoT-GT-header.py* provided by prof. Ordinas.
 
 The constructed topology has the following properties:
-- Insert topology here.
-- (Maybe even draw a graph visualizing the topology).
+- number of nodes: 320
+- number of rings: 8
+- average number of neighbours per node: 5
+- Number of neighbors per ring is Nd = (2d-1)*C
+- Ring d = 1  has Nd =  5  nodes
+- Ring d = 2  has Nd =  15  nodes
+- Ring d = 3  has Nd =  25  nodes
+- Ring d = 4  has Nd =  35  nodes
+- Ring d = 5  has Nd =  45  nodes
+- Ring d = 6  has Nd =  55  nodes
+- Ring d = 7  has Nd =  65  nodes
+- Ring d = 8  has Nd =  75  nodes
 
 #### Calculate Values
 In order to calculate the estimated energy conservation and the end-to-end delay of packet
-transmission, the script *calculation.py* is constructed. This script inputs a
+transmission, the script *calculations.py* is constructed. This script inputs a
 set of variables for different properties of the network, and calculates the results according to
 the formulas provided by the project pdf document, *Table 2* respectively.
 
