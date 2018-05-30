@@ -1,6 +1,6 @@
 ---
 title: "project2"
-author: "Aksel Vincent Berg"
+author: "Aksel Vincent Berg & Sergi Alonso"
 date: "5/30/2018"
 output: pdf_document
 ---
@@ -9,22 +9,51 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Split the file into training set and test set.
 
-```{r cars}
-summary(cars)
+```{r}
+
+training_set <- read.csv("datos_MGTN.csv", nrows=650, header=FALSE)
+
+test_set <- read.csv("datos_MGTN.csv", skip=650, header=FALSE)
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+Task 1: Obtain the mean of the traning set temperature mew_T.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+
+data_training_set <-data.frame(training_set)
+
+mean_temperature_training <- mean(data_training_set[,"V4"])
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Task 2: Obtain the standard deviation (std) of the training set temperature mew_T.
+
+```{r}
+
+sd_temperature_training <- sd(data_training_set[,"V4"])
+
+```
+
+
+Task 3: Normalize all the samples of the training.
+
+```{r}
+
+
+
+
+
+```
+
+
+
+
+
+
