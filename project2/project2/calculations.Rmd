@@ -160,37 +160,64 @@ colnames(myData) <- c("temp_norm_training_set", "resistor_norm_training_set", "h
 test_data_prediction <- predict(fit_ozone_norm, newdata=myData)
 plot(test_data_prediction, type="l")
 
+denomarlized_predicted_test <- array(dim=350)
+
+for (i in 1:350) {
+    denomarlized_predicted_test[i] <- test_data_prediction[i]*sd_ozone_training+mean_ozone_training
+}
+
 RMSE = 0
 for (i in 1:350) {
-    RMSE = RMSE + (test_data_prediction[i]*sd_ozone_training+mean_ozone_training - data_test_set[,"V2"][i])**2
+    RMSE = RMSE + (denomarlized_predicted_test[i] - data_test_set[,"V2"][i])**2
+}
+
+top <- 0
+bottom <- 0
+m <- mean(data_test_set[,"V2"])
+for (i in 1:350) {
+    top <- top + (denomarlized_predicted_test[i] - data_test_set[,"V2"][i])**2
+    bottom <- bottom + (m - data_test_set[,"V2"][i])**2
 }
 
 RMSE = sqrt(1/350 * RMSE)
+r_squared <- 1 - top/bottom
+
 print(RMSE)
+print(r_squared)
 
 ```
+
+The obtained values from the test set:
+- RMSE: 11.777
+- R^2: 0.914
+
+
 
 
 ```{r}
 
+plot(ozone_predicted, type="l", col="red")
+lines(ozone_norm_training_set)
 
-beta1 = 0.43
-beta2 = 0.67
-beta3 = 0.05
+plot(test_data_prediction, type="l", col="red")
+lines(ozone_norm_test_set)
 
-test <- array(dim=350)
 
+all_pred <- array(dim=1000)
+all_actual <- array(dim=1000)
+for (i in 1:650) {
+    all_pred[i] <- ozone_predicted[i]
+    all_actual[i] <- ozone_norm_training_set[i]
+}
 for (i in 1:350) {
-    test[i] <- beta1 * temp_norm_test_set[i] + beta2 * resistor_norm_test_set[i] + beta3 * humidity_norm_test_set[i]
+    all_pred[650+i] <- test_data_prediction[i]
+    all_actual[650+i] <- ozone_norm_test_set[i]
 }
 
-RMSE = 0
-for (i in 1:350) {
-    RMSE = RMSE + (test[i]*sd_ozone_training+mean_ozone_training - data_test_set[,"V2"][i])**2
-}
+plot(all_pred, type="l", col="red")
+lines(all_actual)
 
-RMSE = sqrt(1/350 * RMSE)
-print(RMSE)
+plot(all_actual, all_pred)
 
 ```
 
