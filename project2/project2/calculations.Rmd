@@ -77,9 +77,6 @@ for (i in 1:650) {
     
 }
 
-
-
-
 data_test_set <-data.frame(test_set)
 
 temp_norm_test_set <- array(dim=350)
@@ -103,6 +100,98 @@ for (i in 1:350) {
 
 
 
+Task 2: Project Realization (Practical Part I)
 
+
+Task 2.1
+
+```{r}
+
+plot(data_training_set[,"V3"], type="l")
+
+plot(data_training_set[,"V2"], type="l")
+
+```
+
+
+
+
+```{r}
+
+plot(ozone_norm_training_set, resistor_norm_training_set)
+
+
+```
+
+
+
+Task 4.
+```{r}
+
+fit_ozone_norm <- lm(ozone_norm_training_set ~ temp_norm_training_set + resistor_norm_training_set + humidity_norm_training_set)
+summary(fit_ozone_norm)
+
+ozone_predicted <- predict(fit_ozone_norm)
+RMSE = 0
+for (i in 1:650) {
+    RMSE = RMSE + (ozone_predicted[i]*sd_ozone_training+mean_ozone_training - data_training_set[,"V2"][i])**2
+}
+
+RMSE = sqrt(1/650 * RMSE)
+print(RMSE)
+
+#predict(fit_ozone_norm)
+plot(predict(fit_ozone_norm), type="l")
+
+```
+
+The obtained values from the training set:
+- RMSE: 14.75
+- R^2: 0.8813
+
+
+TASK 5
+
+```{r}
+
+myData <- data.frame(c(temp_norm_test_set), c(resistor_norm_test_set), c(humidity_norm_test_set))
+colnames(myData) <- c("temp_norm_training_set", "resistor_norm_training_set", "humidity_norm_training_set")
+
+test_data_prediction <- predict(fit_ozone_norm, newdata=myData)
+plot(test_data_prediction, type="l")
+
+RMSE = 0
+for (i in 1:350) {
+    RMSE = RMSE + (test_data_prediction[i]*sd_ozone_training+mean_ozone_training - data_test_set[,"V2"][i])**2
+}
+
+RMSE = sqrt(1/350 * RMSE)
+print(RMSE)
+
+```
+
+
+```{r}
+
+
+beta1 = 0.43
+beta2 = 0.67
+beta3 = 0.05
+
+test <- array(dim=350)
+
+for (i in 1:350) {
+    test[i] <- beta1 * temp_norm_test_set[i] + beta2 * resistor_norm_test_set[i] + beta3 * humidity_norm_test_set[i]
+}
+
+RMSE = 0
+for (i in 1:350) {
+    RMSE = RMSE + (test[i]*sd_ozone_training+mean_ozone_training - data_test_set[,"V2"][i])**2
+}
+
+RMSE = sqrt(1/350 * RMSE)
+print(RMSE)
+
+```
 
 
