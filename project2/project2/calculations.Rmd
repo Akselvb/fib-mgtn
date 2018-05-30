@@ -2,7 +2,9 @@
 title: "project2"
 author: "Aksel Vincent Berg & Sergi Alonso"
 date: "5/30/2018"
-output: pdf_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -45,12 +47,59 @@ sd_temperature_training <- sd(data_training_set[,"V4"])
 Task 3: Normalize all the samples of the training.
 
 ```{r}
+n = 650
+
+# Repeat the process for ozone, resistor data and relative humidity.
+
+mean_ozone_training <- mean(data_training_set[,"V2"])
+sd_ozone_training <- sd(data_training_set[,"V2"])
+
+mean_resistor_training <- mean(data_training_set[,"V3"])
+sd_resistor_training <- sd(data_training_set[,"V3"])
+
+mean_humidity_training <- mean(data_training_set[,"V5"])
+sd_humidity_training <- sd(data_training_set[,"V5"])
+
+temp_norm_training_set <- array(dim=n)
+ozone_norm_training_set <- array(dim=n)
+resistor_norm_training_set <- array(dim=n)
+humidity_norm_training_set <- array(dim=n)
+
+# Subtract the mean and devide by the standard deviation.
+for (i in 1:650) {
+    temp_norm_training_set[i] <- (data_training_set[,"V4"][i] - mean_temperature_training) / sd_temperature_training
+    
+    ozone_norm_training_set[i] <- (data_training_set[,"V2"][i] - mean_ozone_training) / sd_ozone_training
+    
+    resistor_norm_training_set[i] <- (data_training_set[,"V3"][i] - mean_resistor_training) / sd_resistor_training
+    
+    humidity_norm_training_set[i] <- (data_training_set[,"V5"][i] - mean_humidity_training) / sd_humidity_training
+    
+}
 
 
 
+
+data_test_set <-data.frame(test_set)
+
+temp_norm_test_set <- array(dim=350)
+ozone_norm_test_set <- array(dim=350)
+resistor_norm_test_set <- array(dim=350)
+humidity_norm_test_set <- array(dim=350)
+
+for (i in 1:350) {
+        temp_norm_test_set[i] <- (data_test_set[,"V4"][i] - mean_temperature_training) / sd_temperature_training
+    
+    ozone_norm_test_set[i] <- (data_test_set[,"V2"][i] - mean_ozone_training) / sd_ozone_training
+    
+    resistor_norm_test_set[i] <- (data_test_set[,"V3"][i] - mean_resistor_training) / sd_resistor_training
+    
+    humidity_norm_test_set[i] <- (data_test_set[,"V5"][i] - mean_humidity_training) / sd_humidity_training
+}
 
 
 ```
+
 
 
 
