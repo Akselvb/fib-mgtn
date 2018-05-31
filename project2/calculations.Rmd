@@ -276,9 +276,6 @@ print("")
 
 
 # Test set
-myData2 <- data.frame(c(temp_norm_test_set), c(resistor_norm_test_set), c(humidity_norm_test_set))
-colnames(myData2) <- c("temp_norm_training_set", "resistor_norm_training_set", "humidity_norm_training_set")
-
 pred_svm_test <- predict(fit_ozone_norm_svm, data_norm_test_set)
 plot(ozone_norm_test_set, type="l", lwd=3)
 lines(pred_svm_test, col="red")
@@ -296,6 +293,7 @@ for (i in 1:n_test) {
     top <- top + (denomarlized_predicted_test_svm[i] - ozone_test[i])**2
     bottom <- bottom + (mean_ozone_test - ozone_test[i])**2
 }
+
 r_squared_test_svm <- 1 - top/bottom
 RMSE_test_svm <- sqrt(1/650 * RMSE)
 
@@ -303,7 +301,6 @@ print("SVM TEST")
 print(r_squared_test_svm)
 print(RMSE_test_svm)
 print("")
-
 
 
 
@@ -320,8 +317,6 @@ for (i in 1:n_test) {
 }
 plot(all_actual_svm, type="l", lwd=3)
 lines(all_pred_svm, col="red")
-
-
 
 
 ```
