@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from gpkit import Variable, Model
+import math
 
 
 ########################################################
@@ -65,7 +66,7 @@ F_B_d[D]  = C*Fout_d[D]
 #   TASK 1    #
 ###############
 
-print "Compute parameters alpha and beta."
+print "\nCompute parameters alpha and beta."
 A1 = (Tcs+Tal)
 A2 = ( (Tps+Tal)/2.0 + Tcs + Tack + Tal + Tdata ) * Fout_d[1] + Fin_d[1] * (3.0/2.0 * (Tps+Tack+Tdata)) + F_B_d[1] * 3.0/4.0*Tps
 A2 = A2[0]
@@ -80,8 +81,9 @@ for i in range(D):
 
 beta2 = 0
 for i in range(D):
-  beta2 += (Tcw/2.0)+Tdata
+    beta2 += (Tcw/2.0)+Tdata
 
+print "\tDone.\n"
 
 print "Calculate energy consumption and delay for different values."
 E = []
@@ -114,6 +116,8 @@ for Fs in [1.0/(60*30*1000), 2.0/(60*30*1000), 6.0/(60*30*1000), 9000000.0/(60*3
     E.append(Es)
     L.append(Ls)
 
+print "\tDone.\n"
+
 
 print "Construct graphs according to different values."
 for i in range(len(E)):
@@ -138,6 +142,7 @@ for i in range(len(E)):
     plt.savefig('images/energy-delay' + str(i) + '.png')
     plt.clf()
 
+print "\tDone.\n"
 
 
 
@@ -146,77 +151,77 @@ for i in range(len(E)):
 #   TASK 2  #
 #############
 
-Fs = 1.0/(60*30*1000)
-alpha1 = A1+A3*Fs
-alpha2 = A4*Fs
-alpha3 = A2*Fs
-
-# Decision variables
-x = Variable("x")
-y = Variable("Fout_d", Fout_d[1])
-z = Variable("test", ((Tcs + Tal + x/2.0 + Tack + Tdata) * y * Fs * C))
-
-E = []
-L = []
-
-print "Optimization: Minimize energy consumption according to different values for maximum delay."
-for Lmax in range(1000, 5000, 10):
-    # Constraint
-    constraints = [Lmax >= beta1 * x + beta2, Tw_min <= x, Tw_max >= x, z <= 0.25]
-
-    # Objective (to minimize)
-    objective = alpha1/x + alpha2*x + alpha3
-
-    # Formulate the Model
-    m = Model(objective, constraints)
-
-    # Solve the Model
-    sol = m.debug(verbosity=0)#sol = m.solve(verbosity=0)
-
-    E.append(sol['cost'])
-    L.append(Lmax)
-
-
-print "Construct graph of optimization problem."
-plt.title("Minimization of energy constrained to different maximum delays.")
-plt.xlabel("L_max")
-plt.ylabel("E_min")
-plt.plot(L, E)
-plt.savefig('images/minimize_energy.png')
-plt.clf()
-
-
-print "Optimization: Minimize delay according to different values for energy budget"
-E = []
-L = []
-e_budget = 0.017
-while e_budget < 0.1:
-    e_budget += 0.0002
-
-    # Constraint
-    constraints = [e_budget >= alpha1/x + alpha2*x + alpha3, Tw_min <= x, Tw_max >= x, z <=0.25]
-
-    # Objective (to minimize)
-    objective = beta1*x + beta2
-
-    # Formulate the Model
-    l = Model(objective, constraints)
-
-    # Solve the Model
-    sol = l.debug(verbosity=0)
-
-    L.append(sol['cost'])
-    E.append(e_budget)
-
-
-print "Construct graph of optimization problem."
-plt.title("Minimization of delay constrained to different energy budgets")
-plt.xlabel("E_budget")
-plt.ylabel("L_min")
-plt.plot(E, L)
-plt.savefig('images/minimize_delay.png')
-plt.clf()
-
+# Fs = 1.0/(60*30*1000)
+# alpha1 = A1+A3*Fs
+# alpha2 = A4*Fs
+# alpha3 = A2*Fs
+#
+# # Decision variables
+# x = Variable("x")
+# y = Variable("Fout_d", Fout_d[1])
+# z = Variable("test", ((Tcs + Tal + x/2.0 + Tack + Tdata) * y * Fs * C))
+#
+# E = []
+# L = []
+#
+# print "Optimization: Minimize energy consumption according to different values for maximum delay."
+# for Lmax in range(1000, 5000, 10):
+#     # Constraint
+#     constraints = [Lmax >= beta1 * x + beta2, Tw_min <= x, Tw_max >= x, z <= 0.25]
+#
+#     # Objective (to minimize)
+#     objective = alpha1/x + alpha2*x + alpha3
+#
+#     # Formulate the Model
+#     m = Model(objective, constraints)
+#
+#     # Solve the Model
+#     sol = m.debug(verbosity=0)#sol = m.solve(verbosity=0)
+#
+#     E.append(sol['cost'])
+#     L.append(Lmax)
+#
+#
+# print "Construct graph of optimization problem."
+# plt.title("Minimization of energy constrained to different maximum delays.")
+# plt.xlabel("L_max")
+# plt.ylabel("E_min")
+# plt.plot(L, E)
+# plt.savefig('images/minimize_energy.png')
+# plt.clf()
+#
+#
+# print "Optimization: Minimize delay according to different values for energy budget"
+# E = []
+# L = []
+# e_budget = 0.017
+# while e_budget < 0.1:
+#     e_budget += 0.0002
+#
+#     # Constraint
+#     constraints = [e_budget >= alpha1/x + alpha2*x + alpha3, Tw_min <= x, Tw_max >= x, z <=0.25]
+#
+#     # Objective (to minimize)
+#     objective = beta1*x + beta2
+#
+#     # Formulate the Model
+#     l = Model(objective, constraints)
+#
+#     # Solve the Model
+#     sol = l.debug(verbosity=0)
+#
+#     L.append(sol['cost'])
+#     E.append(e_budget)
+#
+#
+# print "Construct graph of optimization problem."
+# plt.title("Minimization of delay constrained to different energy budgets")
+# plt.xlabel("E_budget")
+# plt.ylabel("L_min")
+# plt.plot(E, L)
+# plt.savefig('images/minimize_delay.png')
+# plt.clf()
+# print "\tDone.\n"
 
 
 
@@ -227,20 +232,70 @@ plt.clf()
 
 print "Finding trade-off between energy consumption and latency."
 
+Fs = 1.0/(60*30*1000)
+alpha1 = A1+A3*Fs
+alpha2 = A4*Fs
+alpha3 = A2*Fs
+
+beta1 = 0
+for i in range(D):
+    beta1 += 1.0/2.0
+
+beta2 = 0
+for i in range(D):
+    beta2 += (Tcw/2.0)+Tdata
 
 
+E_worst = alpha1/Tw_min + alpha2*Tw_min + alpha3
+L_worst = beta1*Tw_max + beta2
+
+def con0(params):
+    E, L, Tw = params
+    return E_worst - alpha1/Tw - alpha2*Tw - alpha3
+
+def con1(params):
+    E, L, Tw = params
+    return E - alpha1/Tw - alpha2*Tw - alpha3
+
+def con2(params):
+    E, L, Tw = params
+    return L_worst - beta1*Tw - beta2
+
+def con3(params):
+    E, L, Tw = params
+    return L - beta1*Tw - beta2
+
+def con4(params):
+    E, L, Tw = params
+    return Tw - Tw_min
+
+def con5(params):
+    E, L, Tw = params
+    return -(0.25 - (Tcs + Tal + Tw/2.0 + Tack + Tdata) * Fout_d[1] + Fs * C)
 
 
+cons = ({'type': 'ineq', 'fun': con0},
+        {'type': 'ineq', 'fun': con1},
+        {'type': 'ineq', 'fun': con2},
+        {'type': 'ineq', 'fun': con3},
+        {'type': 'ineq', 'fun': con4},
+        {'type': 'ineq', 'fun': con5})
+
+def fun(params):
+    E, L, Tw = params
+    res = -np.log(np.subtract(E_worst, E)) - np.log(np.subtract(L_worst, L))
+    return res
 
 
-
-
-
-
-
-
-
-
+initial_guess = [0, 2000, 100] # E, L, Tw
+result = minimize(fun, initial_guess, method="SLSQP", constraints=cons)
+if result.success:
+    print "\tE:", result.x[0]
+    print "\tL:", result.x[1]
+    print "\tTw:", result.x[2]
+    print "\tRes:", result.fun
+else:
+    raise ValueError(result.message)
 
 
 
@@ -249,11 +304,61 @@ print "Finding trade-off between energy consumption and latency."
 #   TASK 4  #
 #############
 
-print "Finding KSBS point."
+print "\nFinding KSBS point."
+
+E_budget = 0.050
+L_max = 2300
+
+E_best = alpha1/Tw_max + alpha2*Tw_max + alpha3
+L_best = beta1*Tw_min + beta2
+
+def fun1(params):
+    r, x = params
+    return -r
+
+def con10(params):
+    r, x = params
+    return E_budget - alpha1/x - alpha2*x - alpha3
+
+def con11(params):
+    r, x = params
+    return L_max - beta1*x - beta2
+
+def con12(params):
+    r, x = params
+    return E_worst - alpha1/x - alpha2*x - alpha3
+
+def con13(params):
+    r, x = params
+    return L_worst - beta1*x - beta2
+
+def con14(params):
+    r, x = params
+    return (E_worst - (alpha1/x + alpha2*x + alpha3))/((E_worst-E_best) - r)
+
+def con15(params):
+    r, x = params
+    return (L_worst - (beta1*x + beta2))/((L_worst-L_best) - r)
 
 
+cons = ({'type': 'ineq', 'fun': con10},
+        {'type': 'ineq', 'fun': con11},
+        {'type': 'ineq', 'fun': con12},
+        {'type': 'ineq', 'fun': con13},
+        {'type': 'eq', 'fun': con14},
+        {'type': 'eq', 'fun': con15})
 
+#100000000
+initial_guess = [100000000, 250] # r, x
+result = minimize(fun1, initial_guess, constraints=cons)
 
+if result.success:
+    print "\tr:", result.x[0]
+    print "\tTw:", result.x[1]
+else:
+    raise ValueError(result.message)
+
+print ""
 
 
 
