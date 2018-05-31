@@ -17,9 +17,9 @@ Split the file into training set and test set.
 
 ```{r}
 
-training_set <- read.csv("datos_MGTN.csv", nrows=650, header=FALSE)
+data_training_set <- read.csv("datos_MGTN.csv", nrows=650, header=FALSE)
 
-test_set <- read.csv("datos_MGTN.csv", skip=650, header=FALSE)
+data_test_set <- read.csv("datos_MGTN.csv", skip=650, header=FALSE)
 
 ```
 
@@ -28,9 +28,15 @@ Task 1: Obtain the mean of the traning set temperature mew_T.
 
 ```{r}
 
-data_training_set <-data.frame(training_set)
+ozone_training <- data_training_set[,"V2"]
+resistor_training <- data_training_set[,"V3"]
+temperature_training <- data_training_set[,"V4"]
+humidity_training <- data_training_set[,"V5"]
 
-mean_temperature_training <- mean(data_training_set[,"V4"])
+ozone_test <- data_test_set[,"V2"]
+resistor_test <- data_test_set[,"V3"]
+temperature_test <- data_test_set[,"V4"]
+humidity_test <- data_test_set[,"V5"]
 
 ```
 
@@ -39,7 +45,8 @@ Task 2: Obtain the standard deviation (std) of the training set temperature mew_
 
 ```{r}
 
-sd_temperature_training <- sd(data_training_set[,"V4"])
+mean_temperature_training <- mean(temperature_training)
+sd_temperature_training <- sd(temperature_training)
 
 ```
 
@@ -47,51 +54,50 @@ sd_temperature_training <- sd(data_training_set[,"V4"])
 Task 3: Normalize all the samples of the training.
 
 ```{r}
-n = 650
+n_training = length(ozone_training)
+n_test = length(ozone_test)
 
 # Repeat the process for ozone, resistor data and relative humidity.
 
-mean_ozone_training <- mean(data_training_set[,"V2"])
-sd_ozone_training <- sd(data_training_set[,"V2"])
+mean_ozone_training <- mean(ozone_training)
+sd_ozone_training <- sd(ozone_training)
 
-mean_resistor_training <- mean(data_training_set[,"V3"])
-sd_resistor_training <- sd(data_training_set[,"V3"])
+mean_resistor_training <- mean(resistor_training)
+sd_resistor_training <- sd(resistor_training)
 
-mean_humidity_training <- mean(data_training_set[,"V5"])
-sd_humidity_training <- sd(data_training_set[,"V5"])
+mean_humidity_training <- mean(humidity_training)
+sd_humidity_training <- sd(humidity_training)
 
-temp_norm_training_set <- array(dim=n)
-ozone_norm_training_set <- array(dim=n)
-resistor_norm_training_set <- array(dim=n)
-humidity_norm_training_set <- array(dim=n)
+temp_norm_training_set <- array(dim=n_training)
+ozone_norm_training_set <- array(dim=n_training)
+resistor_norm_training_set <- array(dim=n_training)
+humidity_norm_training_set <- array(dim=n_training)
 
-# Subtract the mean and devide by the standard deviation.
-for (i in 1:650) {
-    temp_norm_training_set[i] <- (data_training_set[,"V4"][i] - mean_temperature_training) / sd_temperature_training
+# Normalize: subtract the mean and devide by the standard deviation.
+for (i in 1:n_training) {
+    temp_norm_training_set[i] <- (temperature_training[i] - mean_temperature_training) / sd_temperature_training
     
-    ozone_norm_training_set[i] <- (data_training_set[,"V2"][i] - mean_ozone_training) / sd_ozone_training
+    ozone_norm_training_set[i] <- (ozone_training[i] - mean_ozone_training) / sd_ozone_training
     
-    resistor_norm_training_set[i] <- (data_training_set[,"V3"][i] - mean_resistor_training) / sd_resistor_training
+    resistor_norm_training_set[i] <- (resistor_training[i] - mean_resistor_training) / sd_resistor_training
     
-    humidity_norm_training_set[i] <- (data_training_set[,"V5"][i] - mean_humidity_training) / sd_humidity_training
+    humidity_norm_training_set[i] <- (humidity_training[i] - mean_humidity_training) / sd_humidity_training
     
 }
 
-data_test_set <-data.frame(test_set)
+temp_norm_test_set <- array(dim=n_test)
+ozone_norm_test_set <- array(dim=n_test)
+resistor_norm_test_set <- array(dim=n_test)
+humidity_norm_test_set <- array(dim=n_test)
 
-temp_norm_test_set <- array(dim=350)
-ozone_norm_test_set <- array(dim=350)
-resistor_norm_test_set <- array(dim=350)
-humidity_norm_test_set <- array(dim=350)
-
-for (i in 1:350) {
-        temp_norm_test_set[i] <- (data_test_set[,"V4"][i] - mean_temperature_training) / sd_temperature_training
+for (i in 1:n_test) {
+    temp_norm_test_set[i] <- (temperature_test[i] - mean_temperature_training) / sd_temperature_training
     
-    ozone_norm_test_set[i] <- (data_test_set[,"V2"][i] - mean_ozone_training) / sd_ozone_training
+    ozone_norm_test_set[i] <- (ozone_test[i] - mean_ozone_training) / sd_ozone_training
     
-    resistor_norm_test_set[i] <- (data_test_set[,"V3"][i] - mean_resistor_training) / sd_resistor_training
+    resistor_norm_test_set[i] <- (resistor_test[i] - mean_resistor_training) / sd_resistor_training
     
-    humidity_norm_test_set[i] <- (data_test_set[,"V5"][i] - mean_humidity_training) / sd_humidity_training
+    humidity_norm_test_set[i] <- (humidity_test[i] - mean_humidity_training) / sd_humidity_training
 }
 
 
