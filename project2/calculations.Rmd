@@ -12,53 +12,73 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+2.2 - Project Realization (Practical Part I)
+
+
+
+Task 0. Prepare the data and the variables.
 
 Split the file into training set and test set.
 
 ```{r}
 
-data_training_set <- read.csv("datos_MGTN.csv", nrows=650, header=FALSE)
+training_set <- read.csv("datos_MGTN.csv", nrows=650, header=FALSE)
 
-data_test_set <- read.csv("datos_MGTN.csv", skip=650, header=FALSE)
-
-```
-
-
-Task 1: Obtain the mean of the traning set temperature mew_T.
-
-```{r}
-
-ozone_training <- data_training_set[,"V2"]
-resistor_training <- data_training_set[,"V3"]
-temperature_training <- data_training_set[,"V4"]
-humidity_training <- data_training_set[,"V5"]
-
-ozone_test <- data_test_set[,"V2"]
-resistor_test <- data_test_set[,"V3"]
-temperature_test <- data_test_set[,"V4"]
-humidity_test <- data_test_set[,"V5"]
+test_set <- read.csv("datos_MGTN.csv", skip=650, header=FALSE)
 
 ```
 
 
-Task 2: Obtain the standard deviation (std) of the training set temperature mew_T.
-
 ```{r}
 
-mean_temperature_training <- mean(temperature_training)
-sd_temperature_training <- sd(temperature_training)
+ozone_training <- training_set[,"V2"]
+resistor_training <- training_set[,"V3"]
+temperature_training <- training_set[,"V4"]
+humidity_training <- training_set[,"V5"]
+
+ozone_test <- test_set[,"V2"]
+resistor_test <- test_set[,"V3"]
+temperature_test <- test_set[,"V4"]
+humidity_test <- test_set[,"V5"]
 
 ```
 
 
-Task 3: Normalize all the samples of the training.
+Task 1.
 
 ```{r}
+
+plot(resistor_training,
+     type="l",
+     main="Ozone as a function of time",
+     xlab="Time",
+     ylab="KΩ"
+)
+
+plot(ozone_training,
+     type="l",
+     main="Ozone reference data as a function of time",
+     xlab="Time",
+     ylab="µgr/m^{3}"
+)
+
+```
+
+
+
+Task 2.
+
+```{r}
+
 n_training <- length(ozone_training)
 n_test <- length(ozone_test)
 n_tot <- n_training + n_test
 
-# Repeat the process for ozone, resistor data and relative humidity.
+
+# Find means and standard deviation.
+
+mean_temperature_training <- mean(temperature_training)
+sd_temperature_training <- sd(temperature_training)
 
 mean_ozone_training <- mean(ozone_training)
 sd_ozone_training <- sd(ozone_training)
@@ -86,7 +106,6 @@ for (i in 1:n_training) {
     
 }
 
-
 temp_norm_test_set <- array(dim=n_test)
 ozone_norm_test_set <- array(dim=n_test)
 resistor_norm_test_set <- array(dim=n_test)
@@ -102,88 +121,89 @@ for (i in 1:n_test) {
     humidity_norm_test_set[i] <- (humidity_test[i] - mean_humidity_training) / sd_humidity_training
 }
 
-
 ```
 
 
-
-
-Task 2: Project Realization (Practical Part I)
-
-
-Task 2.1
+Task 3.
 
 ```{r}
 
-plot(resistor_training, type="l")
-
-plot(ozone_training, type="l")
-
-
-```
-
-
-
-
-```{r}
-
-plot(ozone_norm_training_set, resistor_norm_training_set)
-
+plot(ozone_norm_training_set,
+     resistor_norm_training_set,
+     main="Normalized reference data as a function of normalized ozone sensor data",
+     xlab="Normalized ozone sensor data",
+     ylab="Normalized reference data"
+)
 
 ```
 
 
 
 Task 4.
+
 ```{r}
 
+# Multiple linear regression.
 fit_ozone_norm <- lm(ozone_norm_training_set ~ temp_norm_training_set + resistor_norm_training_set + humidity_norm_training_set)
 
 summary(fit_ozone_norm)
 
+
+# Predict the training data.
 ozone_predicted <- predict(fit_ozone_norm)
 
+# Obtain the RMSE.
 RMSE <- 0
 for (i in 1:n_training) {
-    RMSE <- RMSE + (ozone_predicted[i]*sd_ozone_training+mean_ozone_training - ozone_training[i])**2
+    RMSE <- RMSE + (ozone_predicted[i]*sd_ozone_training + mean_ozone_training - ozone_training[i])**2
 }
-
 RMSE <- sqrt(1/n_training * RMSE)
 print(RMSE)
 
-plot(predict(fit_ozone_norm), type="l")
-
 ```
 
+The obtained β coefficients from the multiple linear regression:
+- β0: ~ 0.00
+- β1: 0.43
+- β2: 0.67
+- β3: 0.05
+
 The obtained values from the training set:
-- RMSE: 14.75
 - R^2: 0.8813
+- RMSE: 14.75
 
 
-
-TASK 5
+Task 5.
 
 ```{r}
 
+# Predict the test data.
 data_norm_test_set <- data.frame(c(temp_norm_test_set), c(resistor_norm_test_set), c(humidity_norm_test_set))
 
 # The renaming has to take place in order to make the function work.
 colnames(data_norm_test_set) <- c("temp_norm_training_set", "resistor_norm_training_set", "humidity_norm_training_set")
 
 test_data_prediction <- predict(fit_ozone_norm, newdata=data_norm_test_set)
-plot(test_data_prediction, type="l")
 
+
+# Denormalize the prediction data.
 denomarlized_predicted_test <- array(dim=n_test)
 
 for (i in 1:n_test) {
     denomarlized_predicted_test[i] <- test_data_prediction[i]*sd_ozone_training+mean_ozone_training
 }
 
+
+# Obtain the RMSE.
 RMSE <- 0
 for (i in 1:n_test) {
     RMSE <- RMSE + (denomarlized_predicted_test[i] - ozone_test[i])**2
 }
+RMSE = sqrt(1/n_test * RMSE)
+print(RMSE)
 
+
+# Obtain the R-squared.
 top <- 0
 bottom <- 0
 mean_ozone_test <- mean(ozone_test)
@@ -191,11 +211,7 @@ for (i in 1:n_test) {
     top <- top + (denomarlized_predicted_test[i] - ozone_test[i])**2
     bottom <- bottom + (mean_ozone_test - ozone_test[i])**2
 }
-
-RMSE = sqrt(1/n_test * RMSE)
 r_squared_test_set <- 1 - top/bottom
-
-print(RMSE)
 print(r_squared_test_set)
 
 ```
@@ -206,16 +222,51 @@ The obtained values from the test set:
 
 
 
+Task 6.
+
 - Black line: Actual, normalized data
 - Red line: Predicted data
 ```{r}
 
-plot(ozone_norm_training_set, type="l", lwd=3)
+# Training predicted vs training reference data.
+
+plot(ozone_norm_training_set,
+     type="l",
+     lwd=3,
+     main="Training predicted vs training reference data",
+     ylab="Normalized",
+     xlab="Training data"
+)
 lines(ozone_predicted, col="red")
+legend(x="top",
+       legend=c("Training reference data", "Training predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
-plot(ozone_norm_test_set, type="l", lwd=3)
+
+# Test predicted vs test refence data.
+
+plot(ozone_norm_test_set,
+     type="l",
+     lwd=3,
+     main="Test predicted vs test reference data",
+     ylab="Normalized",
+     xlab="Test data"
+)
 lines(test_data_prediction, col="red")
+legend(x="top",
+       legend=c("Test reference data", "Test predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
+
+# All data.
 
 all_pred <- array(dim=n_tot)
 all_actual <- array(dim=n_tot)
@@ -229,28 +280,63 @@ for (i in 1:n_test) {
     all_actual[n_training+i] <- ozone_norm_test_set[i]
 }
 
-plot(all_actual, type="l", lwd=3)
+plot(all_actual,
+     type="l",
+     lwd=3,
+     main="All predicted vs all reference data",
+     ylab="Normalized",
+     xlab="All data"
+)
 lines(all_pred, col="red")
+legend(x="top",
+       legend=c("All reference data", "All predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
-plot(all_actual, all_pred)
+
+plot(all_actual,
+     all_pred,
+     main="All predicted as a function of reference data",
+     xlab="Reference data",
+     ylab="Predicted data",
+)
 
 ```
 
 
 
 
-Task 2.4) Project Realization (Practical Part II)
+2.2 - Project Realization (Practical Part II)
 
 ```{r}
+
 library(e1071)
 
 fit_ozone_norm_svm <- svm(ozone_norm_training_set ~ temp_norm_training_set + resistor_norm_training_set + humidity_norm_training_set)
 
 
-# Training set
+# Training data.
+
 pred_svm <- predict(fit_ozone_norm_svm)
-plot(ozone_norm_training_set, type="l", lwd=3)
+
+plot(ozone_norm_training_set,
+     type="l",
+     lwd=3,
+     main="SVM: training predicted vs training reference data",
+     ylab="Normalized",
+     xlab="Training data"
+)
 lines(pred_svm, col="red")
+legend(x="top",
+       legend=c("Training reference data", "Training predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
 denomarlized_predicted_training_svm <- array(dim=n_training)
 
@@ -268,18 +354,32 @@ for (i in 1:n_training) {
 r_squared_training_svm <- 1 - top/bottom
 RMSE_training_svm <- sqrt(1/n_training * RMSE)
 
-print("SVM TRAINING")
+print("SVM: TRAINING DATA")
 print(r_squared_training_svm)
 print(RMSE_training_svm)
 print("")
 
 
 
-# Test set
-pred_svm_test <- predict(fit_ozone_norm_svm, data_norm_test_set)
-plot(ozone_norm_test_set, type="l", lwd=3)
-lines(pred_svm_test, col="red")
+# Test data.
 
+pred_svm_test <- predict(fit_ozone_norm_svm, data_norm_test_set)
+
+plot(ozone_norm_test_set,
+     type="l",
+     lwd=3,
+     main="SVM: test predicted vs test reference data",
+     ylab="Normalized",
+     xlab="Test data"
+)
+lines(pred_svm_test, col="red")
+legend(x="top",
+       legend=c("Test reference data", "Test predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
 denomarlized_predicted_test_svm <- array(dim=n_test)
 for (i in 1:n_test) {
@@ -297,14 +397,14 @@ for (i in 1:n_test) {
 r_squared_test_svm <- 1 - top/bottom
 RMSE_test_svm <- sqrt(1/650 * RMSE)
 
-print("SVM TEST")
+print("SVM: TEST DATA")
 print(r_squared_test_svm)
 print(RMSE_test_svm)
-print("")
 
 
 
-# Everything
+# All data.
+
 all_pred_svm <- array(dim=n_tot)
 all_actual_svm <- array(dim=n_tot)
 for (i in 1:n_training) {
@@ -315,9 +415,21 @@ for (i in 1:n_test) {
     all_pred_svm[n_training+i] <- pred_svm_test[i]
     all_actual_svm[n_training+i] <- ozone_norm_test_set[i]
 }
-plot(all_actual_svm, type="l", lwd=3)
+plot(all_actual_svm,
+     type="l",
+     lwd=3,
+     main="SVM: all predicted vs all reference data",
+     ylab="Normalized",
+     xlab="All data"
+     )
 lines(all_pred_svm, col="red")
-
+legend(x="top",
+       legend=c("All reference data", "All predicted"),
+       col=c("black", "red"),
+       lty=1:1,
+       cex=1.0,
+       box.lty=0
+)
 
 ```
 
