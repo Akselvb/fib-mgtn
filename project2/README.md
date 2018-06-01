@@ -1,6 +1,12 @@
 # Project 2
 
-Abstract/Intro
+## Abstract
+
+This report aims to show the results obtained in the second project of the MGTN subject. The project's main objective is to learn how to calibrate an air pollution sensor in a Wireless Sensor Network.
+
+Given the fact that the calibration architecture is collocated, the authors have used a multiple linear regression with off-line training data used to predict new values that could be used to calibrate new sensors. Data generated has been compared against test data to check whether the model used is capable of making accurate predictions.
+
+Additionally, a model has been generated with Support Vector Regression in order to learn about both solutions.
 
 ## 2.2: Project Realization (Practical Part I)
 
@@ -62,6 +68,25 @@ The following plots shows the predicted data in the same plot as the actual refe
 
 ## 2.3: Project Realization (Practical Part II)
 
+### Support Vector Machines
+
+Support Vector Machines are normally used for **classification problems**, dividing data into 2 classes. To do that, SVM projects the data into higher dimensions and then figures out **the best hyperplane** which separates the data into both classes using **kernels**.
+
+![SVM](https://i.imgur.com/WuxyO.png)
+
+In other words, it finds the particular hyperplane which separates these two classes with **minimum error** while also making sure that the perpendicular distance between the two closest points from either of these two classes is maximized.
+
+![SVR](https://upload.wikimedia.org/wikipedia/commons/f/fe/Kernel_Machine.svg)
+
+### Support Vector Regression
+
+Super Vector Machines can be adapted to be used for **regression problems (SVR)** maintaining the main features that characterize the algorithm but using a tolerated error. This tolerated margin (**epsilon**) is set in approximation to the SVM, so the higher the epsilon the more tolerated error. The main idea is the same: minimize the error, individualizing the hyperplane which maximizes the margin but keeping in mind that some part of the error is tolerated:
+
+![wikiSVR](https://upload.wikimedia.org/wikipedia/commons/7/7a/Svr_epsilons_demo.svg)
+
+For Non-linear SVR, kernel functions are used to transform the data into a higher dimensional feature space to make it possible to perform the linear separation.
+
+![SVRnl](http://www.saedsayad.com/images/SVR_5.png)
 
 ## 2.4: Project Realization (Practical Part II)
 ![svm_training_predicted_reference](plots/svm_training_predicted_reference.png)
