@@ -48,19 +48,23 @@ Task 1.
 
 ```{r}
 
+png(filename="plots/ozone_time.png")
 plot(resistor_training,
      type="l",
      main="Ozone as a function of time",
      xlab="Time",
-     ylab="KΩ"
+     ylab="KOhm"
 )
+dev.off()
 
+png(filename="plots/reference_time.png")
 plot(ozone_training,
      type="l",
      main="Ozone reference data as a function of time",
      xlab="Time",
-     ylab="µgr/m^{3}"
+     ylab="mikro*gr/m^3"
 )
+dev.off()
 
 ```
 
@@ -128,12 +132,14 @@ Task 3.
 
 ```{r}
 
+png(filename="plots/normalized_reference_ozone.png")
 plot(ozone_norm_training_set,
      resistor_norm_training_set,
      main="Normalized reference data as a function of normalized ozone sensor data",
      xlab="Normalized ozone sensor data",
      ylab="Normalized reference data"
 )
+dev.off()
 
 ```
 
@@ -230,6 +236,7 @@ Task 6.
 
 # Training predicted vs training reference data.
 
+png(filename="plots/training_predicted_reference.png")
 plot(ozone_norm_training_set,
      type="l",
      lwd=3,
@@ -245,10 +252,12 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 
 # Test predicted vs test refence data.
 
+png(filename="plots/test_predicted_reference.png")
 plot(ozone_norm_test_set,
      type="l",
      lwd=3,
@@ -264,6 +273,7 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 
 # All data.
@@ -280,6 +290,7 @@ for (i in 1:n_test) {
     all_actual[n_training+i] <- ozone_norm_test_set[i]
 }
 
+png(filename="plots/all_predicted_reference.png")
 plot(all_actual,
      type="l",
      lwd=3,
@@ -295,14 +306,18 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 
+# Scatter plot
+png(filename="plots/scatter_predicted_reference.png")
 plot(all_actual,
      all_pred,
      main="All predicted as a function of reference data",
      xlab="Reference data",
-     ylab="Predicted data",
+     ylab="Predicted data"
 )
+dev.off()
 
 ```
 
@@ -322,6 +337,7 @@ fit_ozone_norm_svm <- svm(ozone_norm_training_set ~ temp_norm_training_set + res
 
 pred_svm <- predict(fit_ozone_norm_svm)
 
+png(filename="plots/svm_training_predicted_reference.png")
 plot(ozone_norm_training_set,
      type="l",
      lwd=3,
@@ -337,6 +353,7 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 denomarlized_predicted_training_svm <- array(dim=n_training)
 
@@ -365,6 +382,7 @@ print("")
 
 pred_svm_test <- predict(fit_ozone_norm_svm, data_norm_test_set)
 
+png(filename="plots/svm_test_predicted_reference.png")
 plot(ozone_norm_test_set,
      type="l",
      lwd=3,
@@ -380,6 +398,7 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 denomarlized_predicted_test_svm <- array(dim=n_test)
 for (i in 1:n_test) {
@@ -415,6 +434,8 @@ for (i in 1:n_test) {
     all_pred_svm[n_training+i] <- pred_svm_test[i]
     all_actual_svm[n_training+i] <- ozone_norm_test_set[i]
 }
+
+png(filename="plots/svm_all_predicted_reference.png")
 plot(all_actual_svm,
      type="l",
      lwd=3,
@@ -430,6 +451,7 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
+dev.off()
 
 ```
 
