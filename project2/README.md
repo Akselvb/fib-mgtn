@@ -5,17 +5,26 @@ Abstract/Intro
 ## 2.2: Project Realization (Practical Part I)
 
 ### Q1
+The following plots shows the ozone as a function of time and the reference data as a function of time respectively.
+
 ![ozone_time](plots/ozone_time.png)
 ![reference_time](plots/reference_time.png)
 
-### Q2
+We see that there is a significant resemblance between the two plots, however with some considerable differences.
 
+### Q2
+The attached file *calculations.Rmd* calculates the mean and standard deviation for each of the properties, and displays it in the output console.
 
 ### Q3
+The following scatter-plot shows the linear dependence between the reference data and the sensor data.
 ![normalized_reference_ozone](plots/normalized_reference_ozone.png)
 
-### Q4
+As we see, there is clearly a dependence amongst the two, but the error of the sensor contributes to spread the data.
 
+### Q4
+By performing multiple linear regression using the built-in method of RStudio, the following betas are obtained:
+
+- **\beta<sup>0</sup>** ~ 0
 
 ### Q5
 
