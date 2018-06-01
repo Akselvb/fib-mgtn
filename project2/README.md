@@ -24,7 +24,7 @@ As we see, there is clearly a dependence amongst the two, but the error of the s
 ### Q4
 By performing multiple linear regression using the built-in method of RStudio, the following betas are obtained:
 
-- **\beta<sup>0</sup>** ~ 0
+- **β<sub>0</sub>** ~ 0
 
 ### Q5
 
