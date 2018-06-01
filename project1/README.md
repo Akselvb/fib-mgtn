@@ -83,7 +83,20 @@ It interesting to notice that for both scenarios, there is a specific point wher
 
 
 ## Q3
-- Find trade-off - solve optimization problem
+Paper "Game thoery framework for MAC parameter optimization in energy-delay constrained sensor networks" describes the Nash Bargaining Solution (NBS) as a bargaining game and solves it by creating an optimization problem as a joint collaboration. The solution is obtained when setting the initial guesses to the following:
+- E: 0
+- L: 2000
+- Tw: 100
+
+After ordering the optimization problem as showed in the project paper, the following results were obtained:
+
+- E: 0.02073552413655712
+- L: 910.5275002331807
+- Tw: 214.61987505829512
+- Res: -2.9609706782
+
+In other words, the energy consumption is 0.021J, the latency is 910.5ms, which is obtained when the wake-up period interval is set to 214.6ms.
+
 
 
 
@@ -92,3 +105,19 @@ It interesting to notice that for both scenarios, there is a specific point wher
 ## Q4
 - Use Kalai-Smorodinsky Bargaining Solution (KSBS) to find equal proportion of gain between
 players.
+
+KSBS is yet another method for finding the trade-off. In this case, it considers energy and latency as two different players and negotiates on behalf of each such that an optimized value is found. The following initial guess is used
+
+- r: 100000000
+- Tw: 250
+
+which yields these results:
+
+- r: 199829566.97346354
+- Tw: 216.27181161940098
+
+In other words, the KSBS point is when the wake-up interval is 216.3ms.
+
+
+
+
