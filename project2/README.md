@@ -1,4 +1,4 @@
-# Project 2
+# Project 2: Calibration of an air pollution sensor in Wireles Sensor Network
 
 ## Abstract
 
@@ -89,6 +89,9 @@ For Non-linear SVR, kernel functions are used to transform the data into a highe
 ![SVRnl](http://www.saedsayad.com/images/SVR_5.png)
 
 ## 2.4: Project Realization (Practical Part II)
+
+In this part the team used support vector machines regression for the calibration of the sensor. The process was repeated and a SVM with epsilon=0.1 was used (default value). The following charts show that the model produced data that fits the training and test data even better than with a multiple linear regression:
+
 ![svm_training_predicted_reference](plots/svm_training_predicted_reference.png)
 ![svm_test_predicted_reference](plots/svm_test_predicted_reference.png)
 ![svm_all_predicted_reference](plots/svm_all_predicted_reference.png)
