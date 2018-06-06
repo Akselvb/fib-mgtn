@@ -103,7 +103,7 @@ In this part the team used support vector machines regression for the calibratio
 ![svm_all_predicted_reference](plots/svm_all_predicted_reference.png)
 
 
-We can see that when using multiple linear regresseion, the estimation fitted better for the test set than for the traning set. However, when using SVM, this is not the case. In the latter case, we obtained better values for both **R<sup>2</sup>** and **RMSE** for the test data.
+We can see that when using multiple linear regresseion, the estimation fitted better for the test set than for the traning set. However, when using SVM, this is not the case. In the latter case, we obtained better values for both **R<sup>2</sup>** and **RMSE** for the training data.
 
 
 
