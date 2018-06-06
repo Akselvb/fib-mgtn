@@ -324,7 +324,7 @@ dev.off()
 
 
 
-2.2 - Project Realization (Practical Part II)
+2.4 - Project Realization (Practical Part II)
 
 ```{r}
 
@@ -451,7 +451,6 @@ legend(x="top",
        cex=1.0,
        box.lty=0
 )
-dev.off()
 
 ```
 
