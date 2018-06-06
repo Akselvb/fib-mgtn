@@ -93,5 +93,17 @@ For Non-linear SVR, kernel functions are used to transform the data into a highe
 In this part the team used support vector machines regression for the calibration of the sensor. The process was repeated and a SVM with epsilon=0.1 was used (default value). The following charts show that the model produced data that fits the training and test data even better than with a multiple linear regression:
 
 ![svm_training_predicted_reference](plots/svm_training_predicted_reference.png)
+- **R<sup>2</sup>**: 0.948
+- **RMSE**: 8.159
+
 ![svm_test_predicted_reference](plots/svm_test_predicted_reference.png)
+- **R<sup>2</sup>**: 0.933
+- **RMSE**: 9.846
+
 ![svm_all_predicted_reference](plots/svm_all_predicted_reference.png)
+
+
+We can see that when using multiple linear regresseion, the estimation fitted better for the test set than for the traning set. However, when using SVM, this is not the case. In the latter case, we obtained better values for both **R<sup>2</sup>** and **RMSE** for the test data.
+
+
+
